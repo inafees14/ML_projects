@@ -503,3 +503,180 @@ $$||\nabla I(x,y)|| = \sqrt{\left(\frac{\partial I}{\partial x}\right)^2 + \left
 ### 3.22.1 Definition
 
 **Region-based Segmentation** is a method employed in computer vision and image analysis. It clusters or partitions an image int
+
+
+## 3.23 ANN Based Image Segmentation
+
+### Definition and Core Idea
+
+ANN based image segmentation refers to the use of **Artificial Neural Networks**, specifically deep learning architectures like CNNs (Convolutional Neural Networks), to identify and separate regions or objects within images. The method leverages advanced feature extraction and learning capabilities for improved segmentation accuracy.
+
+### Applications
+
+- Brain tumor segmentation  
+- Segmentation in machine vision  
+- Cardiovascular disease diagnosis  
+
+### Key Properties
+
+- CNNs learn hierarchical and spatial features directly from the images.
+- Segmentation is more robust and efficient compared to traditional ANN approaches.[1]
+- CNN segmentation outperforms standard ANN when dealing with spatial/image data due to convolutional layers preserving spatial relationships.
+
+### Mathematical Structure & Operation
+
+#### CNN Architecture (for segmentation)
+
+- **Convolution Layer**: Extracts spatial features by applying learnable filters to image patches.
+- **Pooling Layer**: Reduces spatial dimensions, helps with translation invariance.
+- **Fully Connected Layer**: Integrates features; used for classification or pixel-wise label prediction.
+
+**Illustration (Conceptual):**
+```plaintext
+[Input Image] → [Convolution Layer(s)] → [Pooling Layer(s)] → [Fully Connected Layer] → [Segmented Output/Region Labels]
+```
+
+#### Feature Extraction and Pattern Learning
+
+- The convolution operation converts an image $I$ into feature maps:
+  $$
+  F_{i,j} = \sum_{m,n} I_{m,n} \cdot K_{i-m, j-n}
+  $$
+  - $I_{m,n}$: input pixel
+  - $K$: convolution kernel
+  - $F_{i,j}$: computed feature at spatial location $(i,j)$
+
+- Learning proceeds by backpropagation, optimizing filter weights to best match segmentation objectives.
+
+***
+
+## 3.24 Spectral Clustering for Image Segmentation
+
+### Concept
+
+Spectral clustering partitions image pixels (treated as nodes in a graph) by evaluating their pairwise similarity. Similar pixels are grouped, forming meaningful segments.
+
+### Mathematical Steps
+
+- Image pixels $X_1, X_2, ..., X_n$ are nodes; similarity measured by weight matrix $W$ where $W_{ij}$ quantifies similarity (often using Gaussian kernel):
+  $$
+  W_{ij} = \exp\left( -\frac{||I_i - I_j||^2}{2\sigma^2} \right)
+  $$
+  - $I_i$, $I_j$: intensity/color vectors for pixels $i$, $j$
+  - $\sigma$: scaling parameter
+
+- **Degree Matrix:**
+  $$
+  d_i = \sum_{j=1}^{n} W_{ij}
+  $$
+  $D$ is diagonal with $d_1, \ldots, d_n$
+
+- **Graph Laplacian:**
+  $$
+  L = D - W
+  $$
+
+- **Algorithm:**
+  1. Compute similarity graph ($W$).
+  2. Form degree matrix ($D$) and Laplacian ($L$).
+  3. Compute first $k$ eigenvectors of $L$ (corresponding to smallest eigenvalues).
+  4. Stack them into matrix $V$, each row being a transformed pixel.
+  5. Apply K-means clustering in $V$-space to get final clusters.
+
+### Remarks
+
+- Eigenvalues close to zero indicate cluster boundaries.
+- Laplace expansion is used for determinant calculation but is only tangentially relevant.
+
+***
+
+## 3.25 Image Quality Measurement Techniques
+
+Several methods are used to evaluate the quality of image processing results and segmentations.
+
+### Mean Square Error (MSE)
+
+**Definition:**
+$$
+MSE(X,Y) = \frac{1}{N} \sum_{i=1}^N (x_i - y_i)^2
+$$
+- $X$, $Y$: reference and test images
+- $x_i$, $y_i$: pixel values
+- $N$: number of pixels
+
+**Properties:**
+- Memoryless estimator (each pixel's error is independent)
+
+### Root Mean Square Error (RMSE)
+
+$$
+RMSE(\hat\theta) = \sqrt{MSE(\hat\theta)}
+$$
+
+### Peak Signal to Noise Ratio (PSNR)
+
+$$
+PSNR(X, Y) = 10 \log_{10}\left( \frac{{\rm PeakValue}^2}{MSE} \right)
+$$
+- For 8-bit images, PeakValue is $255$
+- For normalized indices (e.g., NDVI, NDBI), PeakValue is $1$
+
+***
+
+## 3.26 Structural Similarity Index Method (SSIM)
+
+### Principle
+
+Evaluates image quality by comparing structural information—based on luminance, contrast, and structure comparisons between corresponding pixels.
+
+#### Components
+
+- **Luminance Comparison:**
+  $$
+  M_x = \frac{1}{N} \sum_{i=1}^N x_i,\qquad M_y = \frac{1}{N} \sum_{i=1}^N y_i
+  $$
+  $$
+  L(x, y) = \frac{2 M_x M_y + C_1}{M_x^2 + M_y^2 + C_1}
+  $$
+  $C_1 = (K_1 \cdot MPP)^2$ (small constant for stability)
+
+- **Contrast Comparison:**
+  $$
+  \sigma_x = \sqrt{\frac{1}{N} \sum_{i=1}^N (x_i - M_x)^2},\quad \sigma_y = \sqrt{\frac{1}{N} \sum_{i=1}^N (y_i - M_y)^2}
+  $$
+  $$
+  C(x, y) = \frac{2 \sigma_x \sigma_y + C_2}{\sigma_x^2 + \sigma_y^2 + C_2}
+  $$
+  $C_2 = (K_2 \cdot MPP)^2$
+
+- **Structure Comparison:**
+  $$
+  \sigma_{xy} = \frac{1}{N-1} \sum_{i=1}^N (x_i - M_x) (y_i - M_y)
+  $$
+  $$
+  S(x, y) = \frac{\sigma_{xy} + C_3}{\sigma_x \sigma_y + C_3}
+  $$
+  $C_3 = \frac{C_2}{2}$
+
+#### SSIM Formula
+
+$$
+SSIM(x, y) = L(x, y) \cdot C(x, y) \cdot S(x, y)
+$$
+
+***
+
+## 3.27 Feature Similarity Index Method (FSIM)
+
+### Definition and Formula
+
+Measures similarity by comparing key features and structures:
+$$
+FSIM = 10 \log_{10}[S(x, y)]
+$$
+- $S(x, y)$: structural similarity score between images
+
+### Range
+
+- Values between $0$ (dissimilarity) and $1$ (perfect structural similarity).
+
