@@ -539,9 +539,7 @@ ANN based image segmentation refers to the use of **Artificial Neural Networks**
 #### Feature Extraction and Pattern Learning
 
 - The convolution operation converts an image $I$ into feature maps:
-  $$
-  F_{i,j} = \sum_{m,n} I_{m,n} \cdot K_{i-m, j-n}
-  $$
+  $$F_{i,j} = \sum_{m,n} I_{m,n} \cdot K_{i-m, j-n}$$
   - $I_{m,n}$: input pixel
   - $K$: convolution kernel
   - $F_{i,j}$: computed feature at spatial location $(i,j)$
@@ -559,16 +557,12 @@ Spectral clustering partitions image pixels (treated as nodes in a graph) by eva
 ### Mathematical Steps
 
 - Image pixels $X_1, X_2, ..., X_n$ are nodes; similarity measured by weight matrix $W$ where $W_{ij}$ quantifies similarity (often using Gaussian kernel):
-  $$
-  W_{ij} = \exp\left( -\frac{||I_i - I_j||^2}{2\sigma^2} \right)
-  $$
+  $$W_{ij} = \exp\left( -\frac{||I_i - I_j||^2}{2\sigma^2} \right)$$
   - $I_i$, $I_j$: intensity/color vectors for pixels $i$, $j$
   - $\sigma$: scaling parameter
 
 - **Degree Matrix:**
-  $$
-  d_i = \sum_{j=1}^{n} W_{ij}
-  $$
+  $$d_i = \sum_{j=1}^{n} W_{ij}$$
   $D$ is diagonal with $d_1, \ldots, d_n$
 
 - **Graph Laplacian:**
